@@ -13,6 +13,10 @@ module Gitku
       File.expand_path(File.join(@config[:repo_dir], @name))
     end
 
+    def prefix
+      @config[:prefix] || @config[:repo_dir] || "git://"
+    end
+
     def delete
       FileUtils.rm_rf(root_path)
     end
