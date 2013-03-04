@@ -37,7 +37,7 @@ module Gitku
     def update_hooks
       hooks_filter = File.join(@config[:hooks_dir], "*")
       project_hooks = File.join(root_path, "hooks")
-      IO.popen("ln -f #{hooks_filter} #{project_hooks} 2>&1").readlines
+      puts IO.popen("ln -f #{hooks_filter} #{project_hooks} 2>&1").readlines
     end
 
     def create_repo
