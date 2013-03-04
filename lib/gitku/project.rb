@@ -52,7 +52,7 @@ module Gitku
 
     def self.all
       config = Gitku.config
-      filter = File.join(config[:repo_dir], "*")
+      filter = File.join(config.repo_dir, "*")
       Dir[filter].collect {|v| new(v.split("/").last)}
     end
 
