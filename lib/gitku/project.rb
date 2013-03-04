@@ -14,7 +14,7 @@ module Gitku
     end
 
     def vcs_url
-      prefix = @config[:prefix] || @config[:repo_dir] || "git:/"
+      prefix = @config[:prefix] || @config[:repo_dir] + "/" || "git://"
       prefix + name
     end
 

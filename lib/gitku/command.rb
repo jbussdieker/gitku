@@ -1,15 +1,15 @@
 module Gitku
   class Command
-    def self.run
-      command = ARGV[0]
+    def self.run(args)
+      command = args[0]
       if command == "list"
         list
       elsif command == "create"
-        create(ARGV[1])
+        create(args[1])
       elsif command == "delete"
-        delete(ARGV[1])
+        delete(args[1])
       else
-        puts "Invalid command: #{ARGV[0]}"
+        puts "Invalid command: #{args[0]}"
       end
     end
 
