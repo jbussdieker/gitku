@@ -1,3 +1,5 @@
+require 'gitku'
+
 module Gitku
   class Command
     def self.run(args)
@@ -13,7 +15,7 @@ module Gitku
       elsif command == "update_hooks"
         update_hooks
       else
-        puts "Invalid command: #{args[0]}"
+        $stderr.puts "Invalid command: #{args[0]}"
       end
     end
 
@@ -35,8 +37,8 @@ module Gitku
       begin
         project = Project.create(name)
         puts "Created #{name} 
-  git remote add origin #{project.vcs_url}
-  git push -u origin master"
+  git remote add #{Gitku.config.remote_name} #{project.vcs_url}
+  git push -u #{Gitku.config.remote_name} master"
       rescue Exception => e
         puts "Error creating #{name}. #{e.message}"
       end

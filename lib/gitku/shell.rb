@@ -10,6 +10,7 @@ module Gitku
 
     def run
       if @command
+        ENV["GITKU_USER"] = @username
         FileUtils.chdir(@config[:repo_dir])
         Kernel.exec 'git', 'shell', '-c', @command
       else

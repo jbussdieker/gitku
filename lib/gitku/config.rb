@@ -2,6 +2,8 @@ require 'yaml'
 
 module Gitku
   class Config
+    attr_accessor :config
+
     def initialize(file)
       @config = YAML.load(File.open(file))
     end

@@ -6,15 +6,18 @@ module Gitku
 
     def initialize(name)
       @name = name
-      @config = Gitku.config
+    end
+
+    def config
+      Gitku.config
     end
 
     def root_path
-      File.expand_path(File.join(@config[:repo_dir], @name))
+      File.expand_path(File.join(config.repo_dir, @name))
     end
 
     def vcs_url
-      prefix = @config[:prefix] || @config[:repo_dir] + "/" || "git://"
+      prefix = config.prefix || config.repo_dir + "/" || "git://"
       prefix + name
     end
 
@@ -23,7 +26,7 @@ module Gitku
     end
 
     def rename(to)
-      dest_path = File.join(@config[:repo_dir], to)
+      dest_path = File.join(config.repo_dir, to)
       raise "Name is taken" if File.exists?(dest_path)
       FileUtils.mv(root_path, dest_path)
       @name = to
@@ -34,7 +37,7 @@ module Gitku
     end
 
     def update_hooks
-      hooks_filter = File.join(@config[:hooks_dir], "*")
+      hooks_filter = File.join(config.hooks_dir, "*")
       project_hooks = File.join(root_path, "hooks")
       IO.popen("ln -f #{hooks_filter} #{project_hooks} 2>&1").readlines
     end
@@ -51,8 +54,7 @@ module Gitku
     end
 
     def self.all
-      config = Gitku.config
-      filter = File.join(config.repo_dir, "*")
+      filter = File.join(Gitku.config.repo_dir, "*")
       Dir[filter].collect {|v| new(v.split("/").last)}
     end
 
