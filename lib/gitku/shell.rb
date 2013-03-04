@@ -1,14 +1,20 @@
 module Gitku
   class Shell
-    attr_accessor :user
+    attr_accessor :username
 
     def initialize(args)
-      @user = args[1]
+      @username = args[1]
+      @command = ENV['SSH_ORIGINAL_COMMAND']
+      @config = Gitku.config
     end
 
     def run
-      $stderr.puts "BAMFDUDE ERROR"
-      puts "BAMFDUDE"
+      if @command
+        FileUtils.chdir(@config[:repo_dir])
+        Kernel.exec 'git', 'shell', '-c', @command
+      else
+        Kernel.exec 'git-shell'
+      end
     end
 
     def self.run(args)
