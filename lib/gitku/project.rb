@@ -1,3 +1,5 @@
+require 'fileutils'
+
 module Gitku
   class Project
     attr_accessor :name
