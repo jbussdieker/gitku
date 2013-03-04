@@ -24,7 +24,7 @@ module Gitku
       begin
         project = Project.create(name)
         puts "Created #{name} 
-  git remote add origin #{project.root_path}
+  git remote add origin #{project.vcs_url}
   git push -u origin master"
       rescue Exception => e
         puts "Error creating #{name}. #{e.message}"

@@ -13,8 +13,9 @@ module Gitku
       File.expand_path(File.join(@config[:repo_dir], @name))
     end
 
-    def prefix
-      @config[:prefix] || @config[:repo_dir] || "git://"
+    def vcs_url
+      prefix = @config[:prefix] || @config[:repo_dir] || "git:/"
+      prefix + name
     end
 
     def delete
