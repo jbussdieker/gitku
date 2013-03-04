@@ -7,6 +7,7 @@ module Gitku
     def initialize(name)
       @name = name
       @config = Gitku.config
+      update_hooks if exists?
     end
 
     def root_path
@@ -20,6 +21,13 @@ module Gitku
 
     def delete
       FileUtils.rm_rf(root_path)
+    end
+
+    def rename(to)
+      dest_path = File.join(@config[:repo_dir], to)
+      raise "Name is taken" if File.exists?(dest_path)
+      FileUtils.mv(root_path, dest_path)
+      @name = to
     end
 
     def exists?
