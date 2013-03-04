@@ -8,7 +8,7 @@ module Gitku
     end
 
     def root_path
-      File.expand_path(File.join(@config[:base_dir], @name))
+      File.expand_path(File.join(@config[:repo_dir], @name))
     end
 
     def delete
@@ -38,7 +38,7 @@ module Gitku
 
     def self.all
       config = Gitku.config
-      filter = File.join(config[:base_dir], "*")
+      filter = File.join(config[:repo_dir], "*")
       Dir[filter].collect {|v| new(v.split("/").last)}
     end
 
