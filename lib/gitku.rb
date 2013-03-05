@@ -1,6 +1,7 @@
-require 'gitku/config'
-require 'gitku/project'
-require 'gitku/shell'
+require 'gitku/command'
+require 'gitku/connection'
+require 'gitku/settings'
+require 'gitku/repository'
 
 module Gitku
 end

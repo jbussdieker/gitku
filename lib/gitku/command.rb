@@ -1,66 +1,101 @@
-require 'gitku'
-
 module Gitku
   class Command
-    def self.run(args)
-      command = args[0]
-      if command == "list"
-        list
-      elsif command == "create"
-        create(args[1])
-      elsif command == "delete"
-        delete(args[1])
-      elsif command == "rename"
-        rename(args[1], args[2])
-      elsif command == "update_hooks"
-        update_hooks
-      else
-        $stderr.puts "Invalid command: #{args[0]}"
-      end
+    @@commands = {
+      :list => {},
+      :config => {},
+      :create => {:name => "Repository Name"},
+      :delete => {:name => "Repository Name"},
+      :rename => {:from => "Source Name", :to => "Destination Name"},
+    }
+
+    def initialize(args)
+      @command = args[0].to_s.to_sym
+      @args = args[1..-1]
     end
 
-    def self.update_hooks
-      Project.all.each do |project|
+    def run
+      send(@command, *@args) if respond_to? @command
+      respond_to? @command
+    end
+
+    def self.run(args)
+      new(args).run
+    end
+
+    # Print command line usage information
+    def print_usage
+      puts "gitku COMMAND [ARGS]"
+      puts
+      puts "commands:"
+      @@commands.each do |name, args|
+        puts "  " + name.to_s + " " + args.collect {|name, description| name.to_s.capitalize}.join(" ")
+      end
+      puts
+    end
+
+    def update_hooks
+      Gitku::Repository.each do |project|
         project.update_hooks
       end
-      puts "Done"
     end
 
-    def self.list
-      puts "Projects"
-      Project.all.each do |project|
-        puts "  #{project.name} #{project.vcs_url}"
+    # Display global application settings
+    def config
+      Gitku.config.each do |name, value|
+        puts "#{name} = #{value}"
       end
     end
 
-    def self.create(name)
+    def clone(name)
+      repository = Repository.find(name)
+      puts IO.popen("git clone #{repository.url}").readlines
+    end
+
+    # Run interactive repository list
+    def list
+      puts "Repositories"
+      Gitku::Repository.each do |repository|
+        puts " * #{repository.name}\n   url: #{repository.url} #{repository.origin}"
+      end
+    end
+
+    # Run interactive repository create
+    def create(name, remote = nil)
       begin
-        project = Project.create(name)
-        puts "Created #{name} 
-  git remote add #{Gitku.config.remote_name} #{project.vcs_url}
-  git push -u #{Gitku.config.remote_name} master"
+        repository = Gitku::Repository.create(name, remote)
+        puts "Created #{name}"
+        puts "  git remote add #{Gitku.config.remote_name} #{repository.url}"
+        puts "  git push -u #{Gitku.config.remote_name} master"
       rescue Exception => e
         puts "Error creating #{name}. #{e.message}"
       end
     end
 
-    def self.rename(name, newname)
-      project = Project.find(name)
-      if project
-        project.rename(newname)
+    # Run interactive repository rename
+    def rename(name, newname)
+      repository = Repository.find(name)
+      if repository
+        Repository.rename(name, newname)
         puts "Renamed #{name} to #{newname}"
       else
-        puts "Project not found"
+        puts "Repository not found"
       end
     end
 
-    def self.delete(name)
-      project = Project.find(name)
-      if project
-        project.delete
+    def update
+      Gitku::Repository.each do |repo|
+        repo.fetch
+      end
+    end
+
+    # Run interactive repository delete
+    def delete(name)
+      repository = Gitku::Repository.find(name)
+      if repository
+        repository.delete
         puts "Deleted #{name}"
       else
-        puts "Project not found"
+        puts "Repository not found"
       end
     end
   end

@@ -1,4 +1,0 @@
----
-  :repo_dir: 'data/repos'
-  :hooks_dir: 'data/hooks'
-  :remote_name: origin

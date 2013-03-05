@@ -4,5 +4,5 @@ Gem::Specification.new do |gem|
   gem.summary = "gitku"
   gem.authors = "jbussdieker@gmail.com"
   gem.files   = Dir['{bin,lib}/**/*']
-  gem.executables = ["gitku"]
+  gem.executables = ["gitku", "gitku-shell"]
 end
