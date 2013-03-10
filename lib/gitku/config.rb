@@ -1,16 +1,34 @@
 require 'yaml'
 
 module Gitku
-  @@config = {}
+  class Config
+    attr_accessor :config
+
+    def initialize(file)
+      @config = YAML.load(File.open(file))
+    end
+
+    def merge!(opts)
+      @config.merge! opts
+    end
+
+    def [](key)
+      @config[key]
+    end
+
+    def method_missing(item, *args)
+      @config[item] if @config.has_key? item
+    end
+  end
 
   def self.load_config
-    if File.exists? "/etc/gitku/settings.yml"
-      configure YAML.load(File.open("/etc/gitku/settings.yml"))
-    elsif File.exists? "config/settings.yml"
-      configure YAML.load(File.open("config/settings.yml"))
-    else
-      raise "No config file detected."
+    ["/etc/gitku/settings.yml", "config/settings.yml"].each do |config_file|
+      if File.exists? config_file
+        return Config.new(config_file)
+      end
     end
+
+    raise "No config file detected."
   end
 
   def self.config
@@ -21,5 +39,5 @@ module Gitku
     @@config.merge! opts.dup
   end
 
-  load_config
+  @@config = load_config
 end

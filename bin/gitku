@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-require 'gitku'
+require 'gitku/command'
 
 if ARGV[0] == "git"
   Gitku::Shell.run(ARGV)

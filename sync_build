@@ -1,0 +1,2 @@
+#!/bin/bash
+rsync -ave ssh --delete jbussdieker@home.jbussdieker.com:Desktop/thenew/gitku/* ~/gitku; rm *.gem; gem build gitku.gemspec; sudo gem install gitku-0.0.1.gem --no-rdoc --no-ri
